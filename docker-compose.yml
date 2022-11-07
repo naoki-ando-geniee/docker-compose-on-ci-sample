@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:8.0.31-debian
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: users
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./src:/src:r
+    ports:
+      - 3306:3306
+  clickhouse:
+    build: ./clickhouse
+    environment:
+      CLICKHOUSE_PASSWORD: password
+    volumes:
+      - ./src:/src:r
+    ports:
+      - 8123:8123
+      - 9000:9000
