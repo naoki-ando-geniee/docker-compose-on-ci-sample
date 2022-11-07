@@ -1,0 +1,42 @@
+name: Main
+
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  build_image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Docker Compose
+        uses: yu-ichiro/spin-up-docker-compose-action@v1
+        with:
+          file: docker-compose.yml
+          shared: true
+          bake: true
+          push: true
+          up: false
+  use_image:
+    needs: build_image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Docker Compose
+        uses: yu-ichiro/spin-up-docker-compose-action@v1
+        with:
+          file: docker-compose.yml
+          shared: true
+          pull: true
+      - name: Wait DBs
+        run: |
+          npx wait-on tcp:3306
+          npx wait-on tcp:8123
+          npx wait-on tcp:9000
+      - name: Docker Compose Logs
+        run: docker compose logs
+      - name: Test clickhouse
+        run: docker compose exec clickhouse /src/clickhouse_test.sh
+      - name: Test mysql
+        run: docker compose exec mysql /src/mysql_test.sh
