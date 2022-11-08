@@ -34,6 +34,7 @@ jobs:
           npx wait-on tcp:3306
           npx wait-on tcp:8123
           npx wait-on tcp:9000
+          sleep 1s
       - name: Docker Compose Logs
         run: docker compose logs
       - name: Test clickhouse
