@@ -6,5 +6,4 @@ cluster-node-timeout 5000
 appendonly yes
 dir /redis-data/${PORT}
 protected-mode no
-cluster-preferred-endpoint-type hostname
-cluster-announce-hostname kubernetes.docker.internal
+cluster-announce-ip 127.0.0.1
