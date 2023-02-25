@@ -51,7 +51,7 @@ jobs:
         ports:
           - 7001-7006:7001-7006
         volumes:
-          - ./.github/workflows/redis-cluster.tmpl:/redis-conf/redis-cluster.tmpl
+          - ${{ github.workspace }}/.github/workflows/redis-cluster.tmpl:/redis-conf/redis-cluster.tmpl
         env:
           INITIAL_PORT: 7001
           BIND_ADDRESS: 0.0.0.0
