@@ -49,7 +49,7 @@ jobs:
           cache: true
       - name: Docker
         run: |
-          docker create --name redis_cluster \ 
+          docker create --name redis_cluster \
           -p 7001-7006:7001-7006 \
           --health-cmd "redis-cli -c -p 7001 ping" \
           --health-interval 10s \
