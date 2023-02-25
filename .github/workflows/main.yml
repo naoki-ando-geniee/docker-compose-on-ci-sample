@@ -4,9 +4,32 @@ on:
   push:
   workflow_dispatch:
 jobs:
-  test:
+  build:
+    name: Build
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version-file: ./go.mod
+          cache: true
+      - name: Download go modules
+        run: go mod download
 
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run linters
+        uses: reviewdog/action-golangci-lint@v2
+        with:
+          filter_mode: nofilter
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: [ build ]
     services:
       cache:
         image: redis
@@ -19,11 +42,10 @@ jobs:
           - 6379:6379
 
     steps:
+      - uses: actions/checkout@v3
       - uses: actions/setup-go@v3
         with:
-          go-version: 1.20
+          go-version-file: ./go.mod
           cache: true
-      - name: Checkout
-        uses: actions/checkout@v3
       - name: Test
         run: go test -v ./...
